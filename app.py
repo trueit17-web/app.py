@@ -72,6 +72,7 @@ else:
 
     st.markdown("---")
     # ЗАМЕНИТЕ ЭТУ ССЫЛКУ НА ВАШУ ИЗ LEMONSQUEEZY
-    st.link_button("🔥 ОФОРМИТЬ ПОДПИСКУ СЕЙЧАС", "https://your-payment-link.com")
+    st.link_button("🔥 ОФОРМИТЬ ПОДПИСКУ СЕЙЧАС", "https://bizbooster.lemonsqueezy.com")
     
     st.image("https://img.freepik.com/free-vector/digital-marketing-abstract-concept-vector-illustration_335657-4884.jpg", caption="Развивайте бизнес, пока ИИ работает за вас")
+
