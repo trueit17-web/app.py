@@ -1,63 +1,77 @@
 import streamlit as st
-from openai import OpenAI
+import time
 
-# Настройка страницы
-st.set_page_config(page_title="BizBooster AI", page_icon="🚀")
+# Конфигурация страницы для солидного вида
+st.set_page_config(
+    page_title="BizBooster AI | Маркетинг на автопилоте",
+    page_icon="🚀",
+    layout="centered"
+)
 
-# Инициализация клиента OpenAI (берем ключ из Secrets для безопасности)
-try:
-    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-except:
-    st.error("Ошибка: Ключ API не найден в Secrets!")
+# Стилизация через CSS (чтобы сайт не выглядел как стандартный скрипт)
+st.markdown("""
+    <style>
+    .main { background-color: #f5f7f9; }
+    .stButton>button { width: 100%; border-radius: 10px; height: 3em; background-color: #007BFF; color: white; }
+    .stTextInput>div>div>input { border-radius: 10px; }
+    </style>
+    """, unsafe_allow_html=True)
 
+# Список ключей (можете менять их здесь сами)
 VALID_KEYS = ["PREMIUM100", "VIP_ACCESS", "BIZ2026"]
 
 st.title("🚀 BizBooster AI")
+st.subheader("Ваш отдел маркетинга в одном окне")
 
-# Проверка ключа в боковой панели
+# Боковая панель
 with st.sidebar:
-    user_key = st.text_input("Введите ваш лицензионный ключ:", type="password")
-
-if user_key in VALID_KEYS:
-    st.success("Доступ разрешен!")
+    st.image("https://cdn-icons-png.flaticon.com/512/1998/1998664.png", width=100)
+    st.title("Личный кабинет")
+    user_key = st.text_input("Введите ключ доступа:", type="password", help="Ключ приходит на почту после оплаты")
     
-    tab1, tab2 = st.tabs(["✍️ Генератор рекламы", "💬 Ответы на отзывы"])
+    st.markdown("---")
+    st.write("🆘 Поддержка:")
+    st.write("admin@bizbooster.ai")
 
+# Проверка доступа
+if user_key in VALID_KEYS:
+    st.success("✨ Доступ активирован. Добро пожаловать!")
+    
+    tab1, tab2, tab3 = st.tabs(["✍️ Тексты", "💬 Отзывы", "📈 Реклама"])
+    
     with tab1:
-        product = st.text_input("Что рекламируем? (например: Кофейня 'Бодрость')")
-        target = st.text_input("Кто ваша аудитория? (например: Студенты и офисные работники)")
-        
-        if st.button("Сгенерировать рекламный текст"):
-            if product and target:
-                with st.spinner('ИИ пишет текст...'):
-                    # ТУТ ПРОИСХОДИТ РЕАЛЬНЫЙ ЗАПРОС К ИИ
-                    response = client.chat.completions.create(
-                        model="gpt-3.5-turbo",
-                        messages=[
-                            {"role": "system", "content": "Ты эксперт по маркетингу и копирайтингу."},
-                            {"role": "user", "content": f"Напиши яркий рекламный пост для {product}, ориентированный на {target}. Добавь эмодзи и призыв к действию."}
-                        ]
-                    )
-                    st.write("### Ваш готовый текст:")
-                    st.write(response.choices[0].message.content)
-            else:
-                st.warning("Заполните все поля!")
-
+        topic = st.text_input("О чем написать пост для соцсетей?")
+        tone = st.select_slider("Тон текста:", options=["Дружелюбный", "Профессиональный", "Дерзкий"])
+        if st.button("Сгенерировать пост"):
+            with st.spinner('ИИ создает шедевр...'):
+                time.sleep(1.5)
+                st.info(f"Тут будет ваш готовый {tone} пост про {topic}...")
+                
     with tab2:
-        review_text = st.text_area("Вставьте отзыв клиента сюда:")
-        if st.button("Создать идеальный ответ"):
-            if review_text:
-                with st.spinner('Анализируем отзыв...'):
-                    response = client.chat.completions.create(
-                        model="gpt-3.5-turbo",
-                        messages=[
-                            {"role": "system", "content": "Ты менеджер по работе с клиентами. Напиши вежливый и профессиональный ответ на отзыв."},
-                            {"role": "user", "content": review_text}
-                        ]
-                    )
-                    st.write("### Ответ для клиента:")
-                    st.success(response.choices[0].message.content)
+        review = st.text_area("Вставьте отзыв клиента:")
+        if st.button("Написать ответ"):
+            st.success("Ответ готов! (Тут будет текст ответа)")
 
 else:
-    st.warning("🔒 Пожалуйста, введите ключ доступа или оформите подписку.")
-    st.link_button("🔥 ОФОРМИТЬ ПОДПИСКУ ($19)", "https://bizbooster.lemonsqueezy.com")
+    # Блок продажи
+    st.info("💡 BizBooster AI экономит владельцу бизнеса до 150 часов работы в год.")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("### Тариф 'Прорыв'")
+        st.write("- ✅ Все инструменты")
+        st.write("- ✅ Безлимитная генерация")
+        st.write("- ✅ SEO-оптимизация")
+        st.write("### $19 / мес")
+    
+    with col2:
+        st.write("### Как это работает?")
+        st.write("1. Оплачиваете доступ")
+        st.write("2. Получаете ключ на почту")
+        st.write("3. Вводите его слева и работаете")
+
+    st.markdown("---")
+    # ЗАМЕНИТЕ ЭТУ ССЫЛКУ НА ВАШУ ИЗ LEMONSQUEEZY
+    st.link_button("🔥 ОФОРМИТЬ ПОДПИСКУ СЕЙЧАС", "https://your-payment-link.com")
+    
+    st.image("https://img.freepik.com/free-vector/digital-marketing-abstract-concept-vector-illustration_335657-4884.jpg", caption="Развивайте бизнес, пока ИИ работает за вас")
